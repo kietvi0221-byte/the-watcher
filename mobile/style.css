@@ -1,0 +1,204 @@
+* {
+    box-sizing: border-box;
+}
+
+html,
+body {
+    margin: 0;
+    padding: 0;
+
+    width: 100%;
+    min-height: 100%;
+
+    background: #000000;
+    color: #eeeeee;
+
+    font-family:
+        Consolas,
+        "Courier New",
+        monospace;
+}
+
+body {
+    min-height: 100vh;
+
+    display: flex;
+    justify-content: center;
+    align-items: center;
+
+    overflow-x: hidden;
+}
+
+.watcher {
+    width: min(
+        92vw,
+        430px
+    );
+
+    min-height: 100vh;
+
+    padding:
+        38px
+        24px
+        28px;
+
+    display: flex;
+    flex-direction: column;
+
+    justify-content: center;
+}
+
+.title {
+    font-size: 11px;
+
+    letter-spacing: 4px;
+
+    color: #777777;
+
+    text-align: center;
+
+    margin-bottom: 55px;
+}
+
+.entity {
+    text-align: center;
+
+    font-size: 48px;
+
+    line-height: 1;
+
+    margin-bottom: 28px;
+
+    animation: breathing 3s infinite;
+}
+
+@keyframes breathing {
+
+    0% {
+        opacity: 0.35;
+    }
+
+    50% {
+        opacity: 1;
+    }
+
+    100% {
+        opacity: 0.35;
+    }
+}
+
+.message {
+    min-height: 24px;
+
+    text-align: center;
+
+    font-size: 14px;
+
+    color: #eeeeee;
+
+    line-height: 1.6;
+
+    transition:
+        opacity 0.4s;
+}
+
+.divider {
+    width: 100%;
+
+    height: 1px;
+
+    background: #222222;
+
+    margin:
+        38px
+        0
+        28px;
+}
+
+.section-title {
+    font-size: 9px;
+
+    letter-spacing: 3px;
+
+    color: #555555;
+
+    margin-bottom: 10px;
+}
+
+.device-name {
+    font-size: 14px;
+
+    display: flex;
+
+    align-items: center;
+
+    gap: 9px;
+}
+
+.status-dot {
+    width: 7px;
+    height: 7px;
+
+    border-radius: 50%;
+
+    background: #dddddd;
+
+    display: inline-block;
+}
+
+.connection {
+    font-size: 10px;
+
+    color: #555555;
+
+    margin-top: 6px;
+
+    margin-left: 16px;
+}
+
+.observation {
+    margin-top: 32px;
+
+    font-size: 13px;
+
+    color: #cccccc;
+
+    line-height: 1.6;
+}
+
+.footer {
+    margin-top: 55px;
+
+    text-align: center;
+
+    font-size: 8px;
+
+    letter-spacing: 3px;
+
+    color: #333333;
+}
+
+
+/* ============================================================
+   SMALL PHONES
+   ============================================================ */
+
+@media (
+    max-width: 360px
+) {
+
+    .watcher {
+        padding:
+            30px
+            18px;
+    }
+
+    .title {
+        margin-bottom: 40px;
+    }
+
+    .entity {
+        font-size: 42px;
+    }
+
+}

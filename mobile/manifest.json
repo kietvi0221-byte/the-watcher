@@ -1,0 +1,10 @@
+{
+    "name": "The Watcher",
+    "short_name": "Watcher",
+    "description": "The Watcher",
+    "start_url": "/mobile/",
+    "display": "standalone",
+    "background_color": "#000000",
+    "theme_color": "#000000",
+    "orientation": "portrait"
+}
