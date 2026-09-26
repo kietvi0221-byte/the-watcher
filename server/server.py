@@ -1,5 +1,7 @@
 import os
 import time
+import threading
+
 from flask import Flask, jsonify, request, send_from_directory
 from flask_socketio import SocketIO, emit
 
@@ -9,9 +11,24 @@ from flask_socketio import SocketIO, emit
 # ============================================================
 
 HOST = "0.0.0.0"
-PORT = 5000
 
-ADMIN_TOKEN = "WATCHER-ADMIN-2026"
+PORT = int(
+    os.environ.get(
+        "PORT",
+        5000
+    )
+)
+
+# Local:
+#   Nếu chưa có biến môi trường -> LOCAL-ONLY
+#
+# Render:
+#   Đặt WATCHER_ADMIN_TOKEN trong Environment Variables
+#
+ADMIN_TOKEN = os.environ.get(
+    "WATCHER_ADMIN_TOKEN",
+    "LOCAL-ONLY"
+)
 
 BASE_DIR = os.path.dirname(
     os.path.abspath(__file__)
@@ -33,7 +50,10 @@ MOBILE_DIR = os.path.join(
 
 app = Flask(__name__)
 
-app.config["SECRET_KEY"] = "watcher-secret"
+app.config["SECRET_KEY"] = os.environ.get(
+    "WATCHER_SECRET_KEY",
+    "watcher-local-secret"
+)
 
 socketio = SocketIO(
     app,
@@ -124,14 +144,17 @@ def mobile_status():
 
             online_clients.append({
                 "client_id": client_id,
+
                 "hostname": client.get(
                     "hostname",
                     "Unknown"
                 ),
+
                 "version": client.get(
                     "version",
                     "Unknown"
                 ),
+
                 "last_seen": client.get(
                     "last_seen"
                 )
@@ -155,7 +178,10 @@ def mobile_status():
 # REGISTER
 # ============================================================
 
-@app.route("/api/register", methods=["POST"])
+@app.route(
+    "/api/register",
+    methods=["POST"]
+)
 def register():
 
     if not check_admin():
@@ -190,23 +216,31 @@ def register():
 
     clients[client_id] = {
 
-        "client_id": client_id,
+        "client_id":
+            client_id,
 
-        "hostname": hostname,
+        "hostname":
+            hostname,
 
-        "version": version,
+        "version":
+            version,
 
-        "status": "online",
+        "status":
+            "online",
 
-        "last_seen": now(),
+        "last_seen":
+            now(),
 
-        "sid": None
+        "sid":
+            None
     }
 
     return jsonify({
-        "success": True,
+        "success":
+            True,
 
-        "client_id": client_id
+        "client_id":
+            client_id
     })
 
 
@@ -228,6 +262,7 @@ def client_list():
     for client in clients.values():
 
         result.append({
+
             "client_id":
                 client["client_id"],
 
@@ -251,7 +286,10 @@ def client_list():
 # SEND MESSAGE
 # ============================================================
 
-@app.route("/api/send", methods=["POST"])
+@app.route(
+    "/api/send",
+    methods=["POST"]
+)
 def send_message():
 
     global last_mobile_message
@@ -288,7 +326,8 @@ def send_message():
     if not message:
 
         return jsonify({
-            "error": "message required"
+            "error":
+                "message required"
         }), 400
 
     # ========================================================
@@ -297,9 +336,11 @@ def send_message():
 
     last_mobile_message = {
 
-        "message": message,
+        "message":
+            message,
 
-        "timestamp": now()
+        "timestamp":
+            now()
     }
 
     # ========================================================
@@ -315,7 +356,8 @@ def send_message():
         if not client:
 
             return jsonify({
-                "error": "Client not found"
+                "error":
+                    "Client not found"
             }), 404
 
         sid = client.get(
@@ -326,6 +368,7 @@ def send_message():
 
             socketio.emit(
                 "watcher_message",
+
                 {
                     "message":
                         message,
@@ -336,6 +379,7 @@ def send_message():
                     "effect":
                         effect
                 },
+
                 to=sid
             )
 
@@ -353,6 +397,7 @@ def send_message():
 
                 socketio.emit(
                     "watcher_message",
+
                     {
                         "message":
                             message,
@@ -363,13 +408,17 @@ def send_message():
                         "effect":
                             effect
                     },
+
                     to=sid
                 )
 
     return jsonify({
-        "success": True,
 
-        "message": message
+        "success":
+            True,
+
+        "message":
+            message
     })
 
 
@@ -440,8 +489,10 @@ def identify(data):
 
     emit(
         "identified",
+
         {
-            "success": True,
+            "success":
+                True,
 
             "client_id":
                 client_id
@@ -541,8 +592,6 @@ def cleanup_clients():
 
 if __name__ == "__main__":
 
-    import threading
-
     threading.Thread(
         target=cleanup_clients,
         daemon=True
@@ -553,20 +602,21 @@ if __name__ == "__main__":
     print("        THE WATCHER SERVER")
     print("=" * 50)
     print()
-    print(
-        "Local:"
-    )
+
+    print("Local:")
     print(
         "http://127.0.0.1:5000"
     )
+
     print()
-    print(
-        "Mobile:"
-    )
+
+    print("Mobile:")
     print(
         "http://<PC-IP>:5000/mobile/"
     )
+
     print()
+
     print("=" * 50)
     print()
 
